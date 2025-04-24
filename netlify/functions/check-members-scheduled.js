@@ -1,6 +1,6 @@
 const sendNotification = require('../../pushover');
 
-exports.handler = async function () {
+exports.handler = async function checkMembersScheduled() {
   try {
     const success = await sendNotification('🔔 Test notification from YouTube Member Notifier!');
     
