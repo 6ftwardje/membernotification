@@ -53,5 +53,5 @@ You can get these from your Pushover dashboard.
 ## 📝 Notes
 
 - The function runs hourly by default
-- You can modify the schedule in `netlify/functions/check-members.scheduled.js`
+- You can modify the schedule in `netlify/functions/check-members-scheduled.js`
 - Make sure to replace the dummy member data with real YouTube API integration 
