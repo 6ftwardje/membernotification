@@ -8,6 +8,17 @@ const youtube = google.youtube('v3');
 let lastCheckTime = null;
 let lastMembers = new Set();
 
+// Get all Pushover users from environment variables
+function getPushoverUsers() {
+  const users = [];
+  let i = 1;
+  while (process.env[`PUSHOVER_USER_${i}`]) {
+    users.push(process.env[`PUSHOVER_USER_${i}`]);
+    i++;
+  }
+  return users;
+}
+
 async function getYouTubeMembers() {
   try {
     const response = await youtube.members.list({
@@ -40,7 +51,13 @@ exports.handler = async function checkmembersscheduled() {
         `🎉 ${member.name} joined at ${member.joinDate.toLocaleString()}`
       ).join('\n');
       
-      await sendNotification(message);
+      // Send notification to all registered users
+      const users = getPushoverUsers();
+      const notifications = users.map(user => 
+        sendNotification(message, user)
+      );
+      
+      await Promise.all(notifications);
     }
     
     // Update last check time and members
@@ -51,7 +68,8 @@ exports.handler = async function checkmembersscheduled() {
       statusCode: 200,
       body: JSON.stringify({ 
         message: 'Check complete',
-        newMembers: newMembers.length
+        newMembers: newMembers.length,
+        notifiedUsers: getPushoverUsers().length
       })
     };
   } catch (error) {
