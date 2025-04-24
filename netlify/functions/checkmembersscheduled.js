@@ -1,6 +1,7 @@
 const sendNotification = require('../../pushover');
 
-exports.handler = async function check_members_scheduled() {
+// Rename the handler to follow Netlify's naming convention
+exports.handler = async function checkmembersscheduled() {
   try {
     const success = await sendNotification('🔔 Test notification from YouTube Member Notifier!');
     
