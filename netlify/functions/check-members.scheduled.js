@@ -1,26 +1,27 @@
 const sendNotification = require('../../pushover');
 
-let lastMembers = ['Alice', 'Bob']; // Replace this with real stored state
-
-async function getYouTubeMembers() {
-  // TODO: Replace with actual YouTube Data API call
-  return ['Alice', 'Bob', 'Charlie']; // Simulated new member: Charlie
-}
-
 exports.handler = async function () {
-  const currentMembers = await getYouTubeMembers();
-
-  const newMembers = currentMembers.filter(m => !lastMembers.includes(m));
-
-  if (newMembers.length > 0) {
-    await sendNotification(`🎉 New member(s): ${newMembers.join(', ')}`);
-    lastMembers = currentMembers;
+  try {
+    const success = await sendNotification('🔔 Test notification from YouTube Member Notifier!');
+    
+    if (success) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ message: 'Test notification sent successfully!' })
+      };
+    } else {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ message: 'Failed to send test notification' })
+      };
+    }
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: 'Error sending notification', error: error.message })
+    };
   }
-
-  return {
-    statusCode: 200,
-    body: 'Check complete',
-  };
 };
 
-exports.schedule = "@hourly"; // Run every hour (change if needed) 
+// Temporarily disable the schedule for testing
+// exports.schedule = "@hourly"; 
